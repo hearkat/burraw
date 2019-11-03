@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"encoding/gob"
 	"fmt"
 	i "github.com/hearkat/burraw/interface"
 	"github.com/hearkat/hearkat-go"
@@ -20,6 +21,9 @@ type Data struct {
 }
 
 func NewData(b i.Burraw) *Data {
+	gob.Register(map[string]StoreData{})
+	gob.Register(map[string][]DataItem{})
+
 	data := &Data{
 		make(map[string]StoreData),
 		make(map[string][]DataItem),
