@@ -7,4 +7,5 @@ type Burraw interface {
 	OnMessage(func(*hearkat.MessageContainer))
 	Push(channel string, message *hearkat.Message) error
 	GetConfig(interface{}) error
+	GetSave() *Save
 }
