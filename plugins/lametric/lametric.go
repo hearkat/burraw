@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	i "github.com/hearkat/burraw/interface"
 	"github.com/hearkat/hearkat-go"
+	"net/http"
 )
 
 type Lametric struct {
@@ -12,6 +14,7 @@ type Lametric struct {
 func main() {}
 
 func InitPlugin() i.Plugin {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	return &Lametric{}
 }
 
