@@ -28,6 +28,7 @@ func newBurraw(dir string) *burraw {
 		nil,
 	}
 
+	b.init()
 	b.config = loadConfig(b.getConfigFile())
 
 	b.hearkat = hearkat.NewClient(
@@ -138,7 +139,6 @@ func (b *burraw) listen() {
 }
 
 func (b *burraw) run() {
-	b.init()
 	plugins := b.loadPlugins()
 
 	for _, plugin := range plugins {
@@ -160,6 +160,7 @@ func (b *burraw) run() {
 
 		LOG("Sopping plugin", pl.Name())
 		pl.Stop()
+		plugin.writeSave()
 		LOG("Stopped plugin", pl.Name())
 	}
 }

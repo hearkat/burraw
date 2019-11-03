@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	i "github.com/hearkat/burraw/interface"
 	"github.com/hearkat/hearkat-go"
+	"github.com/kandoo/beehive/gob"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
@@ -16,16 +18,22 @@ type plugin struct {
 	plugin   i.Plugin
 	msg      chan *hearkat.MessageContainer
 	handlers []func(*hearkat.MessageContainer)
+	save     *i.Save
 }
 
 func newPlugin(b *burraw, file string, pl i.Plugin) *plugin {
-	return &plugin{
+	p := &plugin{
 		b,
 		file,
 		pl,
 		make(chan *hearkat.MessageContainer, 100),
 		make([]func(*hearkat.MessageContainer), 0),
+		nil,
 	}
+
+	p.save = p.loadSave()
+
+	return p
 }
 
 func (p *plugin) Handle(container *hearkat.MessageContainer) {
@@ -38,6 +46,10 @@ func (p *plugin) Handle(container *hearkat.MessageContainer) {
 
 func (p *plugin) GetConfigFile() string {
 	return path.Join(p.burraw.getPluginFolder(p), "config.json")
+}
+
+func (p *plugin) GetSaveFile() string {
+	return path.Join(p.burraw.getPluginFolder(p), "save.bin")
 }
 
 func (p *plugin) Stream() chan *hearkat.MessageContainer {
@@ -60,11 +72,15 @@ func (p *plugin) GetConfig(config interface{}) error {
 	cf := p.GetConfigFile()
 
 	if _, err := os.Stat(cf); os.IsNotExist(err) {
-		dat, err := json.Marshal(config)
 
-		if err != nil {
-			return err
+		out := bytes.NewBuffer(nil)
+		enc := json.NewEncoder(out)
+		enc.SetIndent("", "    ")
+		if err := enc.Encode(config); err != nil {
+			panic(err)
 		}
+
+		dat := out.Bytes()
 
 		err = ioutil.WriteFile(cf, dat, os.ModePerm)
 		if err != nil {
@@ -87,4 +103,42 @@ func (p *plugin) GetConfig(config interface{}) error {
 	}
 
 	return nil
+}
+
+func (p *plugin) loadSave() *i.Save {
+	sf := p.GetSaveFile()
+
+	if _, err := os.Stat(sf); os.IsNotExist(err) {
+		return &i.Save{}
+	}
+
+	file, err := ioutil.ReadFile(sf)
+	if err != nil {
+		panic(err)
+	}
+
+	sav := &i.Save{}
+
+	err = gob.Decode(sav, file)
+	if err != nil {
+		panic(err)
+	}
+
+	return sav
+}
+
+func (p *plugin) writeSave() {
+	dat, err := gob.Encode(p.save)
+	if err != nil {
+		panic(err)
+	}
+
+	err = ioutil.WriteFile(p.GetSaveFile(), dat, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (p *plugin) GetSave() *i.Save {
+	return p.save
 }
