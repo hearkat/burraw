@@ -16,7 +16,7 @@ func InitPlugin() i.Plugin {
 }
 
 func (p *Lametric) Name() string {
-	return "plushover"
+	return "lametric"
 }
 
 func (p *Lametric) Start(b i.Burraw) {
