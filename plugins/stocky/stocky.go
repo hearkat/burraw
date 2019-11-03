@@ -2,6 +2,7 @@ package main
 
 import (
 	"./provider"
+	"encoding/gob"
 	i "github.com/hearkat/burraw/interface"
 	"log"
 	"time"
@@ -16,6 +17,8 @@ type Stocky struct {
 func main() {}
 
 func InitPlugin() i.Plugin {
+	gob.Register(map[string]provider.StoreData{})
+	gob.Register(map[string][]provider.DataItem{})
 	return &Stocky{}
 }
 
