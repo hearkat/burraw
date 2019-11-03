@@ -71,6 +71,10 @@ func (p *plugin) GetConfig(config interface{}) error {
 			return err
 		}
 
+		WARN("Generated default config for plugin", p.plugin.Name())
+		WARN("Please make sure to edit it")
+		os.Exit(0)
+
 		return nil
 	}
 
