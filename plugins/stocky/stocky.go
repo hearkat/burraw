@@ -9,7 +9,7 @@ import (
 
 type Stocky struct {
 	burraw i.Burraw
-	config *Config
+	config Config
 	data   *provider.Data
 }
 
@@ -24,7 +24,7 @@ func (p *Stocky) Name() string {
 }
 
 func (p *Stocky) Start(b i.Burraw) {
-	err := b.GetConfig(p.config)
+	err := b.GetConfig(&p.config)
 	if err != nil {
 		panic(err)
 	}
