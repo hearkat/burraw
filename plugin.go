@@ -109,7 +109,11 @@ func (p *plugin) loadSave() *i.Save {
 	sf := p.GetSaveFile()
 
 	if _, err := os.Stat(sf); os.IsNotExist(err) {
-		return &i.Save{}
+		return &i.Save{
+			make(map[string]interface{}),
+			make([]interface{}, 0),
+			make(map[interface{}]interface{}),
+		}
 	}
 
 	file, err := ioutil.ReadFile(sf)
@@ -117,11 +121,7 @@ func (p *plugin) loadSave() *i.Save {
 		panic(err)
 	}
 
-	sav := &i.Save{
-		make(map[string]interface{}),
-		make([]interface{}, 0),
-		make(map[interface{}]interface{}),
-	}
+	sav := &i.Save{}
 
 	err = gob.Decode(sav, file)
 	if err != nil {
