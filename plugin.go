@@ -117,7 +117,11 @@ func (p *plugin) loadSave() *i.Save {
 		panic(err)
 	}
 
-	sav := &i.Save{}
+	sav := &i.Save{
+		make(map[string]interface{}),
+		make([]interface{}, 0),
+		make(map[interface{}]interface{}),
+	}
 
 	err = gob.Decode(sav, file)
 	if err != nil {
