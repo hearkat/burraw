@@ -1,8 +1,8 @@
 package main
 
 import (
-	i "./interface"
 	"encoding/json"
+	i "github.com/hearkat/burraw/interface"
 	"github.com/hearkat/hearkat-go"
 	"github.com/pkg/errors"
 	"io/ioutil"

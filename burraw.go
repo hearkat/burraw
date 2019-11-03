@@ -1,7 +1,7 @@
 package main
 
 import (
-	i "./interface"
+	i "github.com/hearkat/burraw/interface"
 	"github.com/hearkat/hearkat-go"
 	"io/ioutil"
 	"log"
@@ -76,7 +76,7 @@ func (b *burraw) loadGoPlugin(filename string) *plugin {
 	var plugin func() i.Plugin
 	plugin, ok := pluginVar.(func() i.Plugin)
 	if !ok {
-		WARN(filename, "Type 'func() plugin' expected as entry point")
+		WARN(filename, "Type 'func() Plugin' expected as entry point")
 		return nil
 	}
 
