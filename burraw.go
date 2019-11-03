@@ -113,7 +113,7 @@ func (b *burraw) loadPlugins() []*plugin {
 
 func (b *burraw) handleMessage(container *hearkat.MessageContainer) {
 	for _, p := range b.plugins {
-		p.msg <- container
+		p.Handle(container)
 	}
 }
 

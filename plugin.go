@@ -11,10 +11,11 @@ import (
 )
 
 type plugin struct {
-	burraw *burraw
-	file   string
-	plugin i.Plugin
-	msg    chan *hearkat.MessageContainer
+	burraw   *burraw
+	file     string
+	plugin   i.Plugin
+	msg      chan *hearkat.MessageContainer
+	handlers []func(*hearkat.MessageContainer)
 }
 
 func newPlugin(b *burraw, file string, pl i.Plugin) *plugin {
@@ -23,6 +24,15 @@ func newPlugin(b *burraw, file string, pl i.Plugin) *plugin {
 		file,
 		pl,
 		make(chan *hearkat.MessageContainer, 100),
+		make([]func(*hearkat.MessageContainer), 0),
+	}
+}
+
+func (p *plugin) Handle(container *hearkat.MessageContainer) {
+	p.msg <- container
+
+	for _, h := range p.handlers {
+		h(container)
 	}
 }
 
@@ -32,6 +42,10 @@ func (p *plugin) GetConfigFile() string {
 
 func (p *plugin) Stream() chan *hearkat.MessageContainer {
 	return p.msg
+}
+
+func (p *plugin) OnMessage(f func(*hearkat.MessageContainer)) {
+	p.handlers = append(p.handlers, f)
 }
 
 func (p *plugin) Push(channel string, message *hearkat.Message) error {
