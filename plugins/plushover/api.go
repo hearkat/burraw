@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"github.com/gregdel/pushover"
 	"github.com/hearkat/hearkat-go"
+	"io/ioutil"
+	"net/http"
 	"regexp"
 	"strings"
 )
