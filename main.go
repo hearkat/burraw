@@ -1,4 +1,4 @@
-package Burraw
+package main
 
 import (
 	"os"
