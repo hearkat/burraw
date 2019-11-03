@@ -16,7 +16,7 @@ import (
 type burraw struct {
 	dir     string
 	config  *Config
-	plugins []plugin
+	plugins []*plugin
 	hearkat hearkat.Hearkat
 }
 
@@ -139,9 +139,9 @@ func (b *burraw) listen() {
 }
 
 func (b *burraw) run() {
-	plugins := b.loadPlugins()
+	b.plugins = b.loadPlugins()
 
-	for _, plugin := range plugins {
+	for _, plugin := range b.plugins {
 		pl := plugin.plugin
 
 		LOG("Starting plugin", pl.Name())
@@ -155,7 +155,7 @@ func (b *burraw) run() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	log.Println(<-ch)
 
-	for _, plugin := range plugins {
+	for _, plugin := range b.plugins {
 		pl := plugin.plugin
 
 		LOG("Sopping plugin", pl.Name())
