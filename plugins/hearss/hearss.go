@@ -25,7 +25,7 @@ func (p *Hearss) Name() string {
 func (p *Hearss) Start(b i.Burraw) {
 	p.burraw = b
 
-	err := b.GetConfig(p.config)
+	err := b.GetConfig(&p.config)
 	if err != nil {
 		panic(err)
 	}
