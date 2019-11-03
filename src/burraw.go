@@ -41,6 +41,10 @@ func (b *burraw) getPluginsFolder() string {
 	return path.Join(b.dir, "plugins")
 }
 
+func (b *burraw) getPluginFolder(pl *Plugin) string {
+	return path.Join(b.dir, "plugins", pl.plugin.Name())
+}
+
 func (b *burraw) getConfigFile() string {
 	return path.Join(b.dir, "config.json")
 }
@@ -95,6 +99,11 @@ func (b *burraw) loadPlugins() []*Plugin {
 			p := b.loadGoPlugin(f.Name())
 			if p != nil {
 				plugins = append(plugins, p)
+
+				err = os.MkdirAll(b.getPluginFolder(p), os.ModePerm)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
