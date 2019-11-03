@@ -10,15 +10,15 @@ import (
 	"path"
 )
 
-type Plugin struct {
+type plugin struct {
 	burraw *burraw
-	file string
+	file   string
 	plugin i.Plugin
-	msg chan *hearkat.MessageContainer
+	msg    chan *hearkat.MessageContainer
 }
 
-func newPlugin(b *burraw, file string, pl i.Plugin) *Plugin {
-	return &Plugin{
+func newPlugin(b *burraw, file string, pl i.Plugin) *plugin {
+	return &plugin{
 		b,
 		file,
 		pl,
@@ -26,15 +26,15 @@ func newPlugin(b *burraw, file string, pl i.Plugin) *Plugin {
 	}
 }
 
-func (p *Plugin) GetConfigFile() string {
+func (p *plugin) GetConfigFile() string {
 	return path.Join(p.burraw.getPluginFolder(p), "config.json")
 }
 
-func (p *Plugin) Stream() chan *hearkat.MessageContainer {
+func (p *plugin) Stream() chan *hearkat.MessageContainer {
 	return p.msg
 }
 
-func (p *Plugin) Push(channel string, message *hearkat.Message) error {
+func (p *plugin) Push(channel string, message *hearkat.Message) error {
 	if p.burraw.hearkat == nil {
 		return errors.New("Hearkat unavailable")
 	}
@@ -42,7 +42,7 @@ func (p *Plugin) Push(channel string, message *hearkat.Message) error {
 	return p.burraw.hearkat.Push(channel, message)
 }
 
-func (p *Plugin) GetConfig(config interface{}) error {
+func (p *plugin) GetConfig(config interface{}) error {
 	cf := p.GetConfigFile()
 
 	if _, err := os.Stat(cf); os.IsNotExist(err) {

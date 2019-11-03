@@ -8,15 +8,15 @@ import (
 	"os"
 	"os/signal"
 	"path"
-	"plugin"
+	p "plugin"
 	"syscall"
 	"time"
 )
 
 type burraw struct {
-	dir string
-	config *Config
-	plugins []Plugin
+	dir     string
+	config  *Config
+	plugins []plugin
 	hearkat hearkat.Hearkat
 }
 
@@ -41,7 +41,7 @@ func (b *burraw) getPluginsFolder() string {
 	return path.Join(b.dir, "plugins")
 }
 
-func (b *burraw) getPluginFolder(pl *Plugin) string {
+func (b *burraw) getPluginFolder(pl *plugin) string {
 	return path.Join(b.dir, "plugins", pl.plugin.Name())
 }
 
@@ -56,12 +56,12 @@ func (b *burraw) init() {
 	}
 }
 
-func (b *burraw) loadGoPlugin(filename string) *Plugin {
+func (b *burraw) loadGoPlugin(filename string) *plugin {
 	file := path.Join(b.getPluginsFolder(), filename)
 
 	LOG("Initializing plugin", filename)
 
-	plug, err := plugin.Open(file)
+	plug, err := p.Open(file)
 	if err != nil {
 		WARN(err)
 		return nil
@@ -76,7 +76,7 @@ func (b *burraw) loadGoPlugin(filename string) *Plugin {
 	var plugin func() i.Plugin
 	plugin, ok := pluginVar.(func() i.Plugin)
 	if !ok {
-		WARN(filename, "Type 'func() Plugin' expected as entry point")
+		WARN(filename, "Type 'func() plugin' expected as entry point")
 		return nil
 	}
 
@@ -86,16 +86,16 @@ func (b *burraw) loadGoPlugin(filename string) *Plugin {
 	return newPlugin(b, file, pl)
 }
 
-func (b *burraw) loadPlugins() []*Plugin {
+func (b *burraw) loadPlugins() []*plugin {
 	files, err := ioutil.ReadDir(b.getPluginsFolder())
 	if err != nil {
 		panic(err)
 	}
 
-	plugins := make([]*Plugin, 0)
+	plugins := make([]*plugin, 0)
 
 	for _, f := range files {
-		if ! f.IsDir() {
+		if !f.IsDir() {
 			p := b.loadGoPlugin(f.Name())
 			if p != nil {
 				plugins = append(plugins, p)
