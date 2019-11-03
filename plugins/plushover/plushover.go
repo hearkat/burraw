@@ -1,15 +1,15 @@
 package main
 
 import (
-"bytes"
-"encoding/base64"
-"github.com/gregdel/pushover"
-i "github.com/hearkat/burraw/interface"
-"github.com/hearkat/hearkat-go"
-"io/ioutil"
-"net/http"
-"regexp"
-"strings"
+	"bytes"
+	"encoding/base64"
+	"github.com/gregdel/pushover"
+	i "github.com/hearkat/burraw/interface"
+	"github.com/hearkat/hearkat-go"
+	"io/ioutil"
+	"net/http"
+	"regexp"
+	"strings"
 )
 
 type PushoverConfig struct {
@@ -145,4 +145,3 @@ func (p *Plushover) ImageHTTP(notif *pushover.Message, msg *hearkat.MessageConta
 		panic(err)
 	}
 }
-
