@@ -54,7 +54,7 @@ func (p *Hearss) parseRSS(rss *RSSConfig) {
 	}
 
 	for _, item := range feed.Items {
-		if !p.hasItem(feed.Link, item.GUID) {
+		if !p.hasSeen(feed.Link, item.PublishedParsed) {
 			msg := d.ToHearkat(item)
 			fmt.Println(item.Title)
 
@@ -67,7 +67,7 @@ func (p *Hearss) parseRSS(rss *RSSConfig) {
 				panic(err)
 				continue
 			}
-			err = p.addItem(feed.Link, item.GUID)
+			err = p.setSeen(feed.Link, item.PublishedParsed)
 			if err != nil {
 				panic(err)
 				continue

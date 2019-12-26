@@ -1,24 +1,22 @@
 package main
 
-func (p *Hearss) hasItem(feedId string, guid string) bool {
+import "time"
+
+func (p *Hearss) hasSeen(feedId string, date *time.Time) bool {
 	if val, ok := p.burraw.GetSave().Store[feedId]; ok {
-		arr := val.([]string)
-		for _, v := range arr {
-			if v == guid {
-				return true
-			}
-		}
+		d := val.(time.Time)
+		return d.After(*date)
 	}
 	return false
 }
 
-func (p *Hearss) addItem(feedId string, guid string) error {
+func (p *Hearss) setSeen(feedId string, date *time.Time) error {
 	if _, ok := p.burraw.GetSave().Store[feedId]; !ok {
-		p.burraw.GetSave().Store[feedId] = make([]string, 0)
+		p.burraw.GetSave().Store[feedId] = *date
 	}
 
-	p.burraw.GetSave().Store[feedId] = append(
-		p.burraw.GetSave().Store[feedId].([]string), guid)
-
+	if p.burraw.GetSave().Store[feedId].(time.Time).Before(*date) {
+		p.burraw.GetSave().Store[feedId] = *date
+	}
 	return nil
 }
