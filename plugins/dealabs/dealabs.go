@@ -38,6 +38,7 @@ func (p *Dealabs) Start(b i.Burraw) {
 					continue
 				}
 
+				p.setSeen(&deal)
 				msg := ToHearkat(&deal)
 				b.Push(p.config.Channel, msg)
 			}
