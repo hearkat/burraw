@@ -34,6 +34,10 @@ func (p *Dealabs) Start(b i.Burraw) {
 	go func() {
 		for {
 			for _, deal := range d.GetNewDeals(nil).Data {
+				if p.hasSeen(deal) {
+					continue
+				}
+
 				msg := ToHearkat(&deal)
 				b.Push(p.config.Channel, msg)
 			}
