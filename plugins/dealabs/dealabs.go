@@ -34,7 +34,7 @@ func (p *Dealabs) Start(b i.Burraw) {
 	go func() {
 		for {
 			for _, deal := range d.GetNewDeals(nil).Data {
-				if p.hasSeen(deal) {
+				if p.hasSeen(&deal) {
 					continue
 				}
 
